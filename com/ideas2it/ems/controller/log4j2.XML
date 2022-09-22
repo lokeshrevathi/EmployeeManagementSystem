@@ -1,0 +1,12 @@
+<Configuration status="fatal" name="MyApp" packages="">
+  <Appenders>
+    <Console name = "STDOUT" target = "SYSTEM_OUT">
+      <PatternLayout pattern = "%m"/>
+    </Console>
+  </Appenders>
+  <Loggers>
+    <Root level="info">
+      <AppenderRef ref="STDOUT"/>
+    </Root>
+  </Loggers>
+</Configuration>
