@@ -54,26 +54,6 @@ public class UtilValidation {
         return isDate;
     }
 
-    /* public static boolean checkName(String name) {
-        String regexName = "^[a-zA-Z]{2,15}[ ]?[a-zA-Z]{0,15}$";
-        return Pattern.matches(regexName, name);
-    }
-
-    public static boolean checkRole(String role) {
-        String regexRole = "^[a-zA-Z]{2,15}[ ]?[a-zA-Z]{0,15}$";
-        return Pattern.matches(regexRole, role);
-    }
-
-    public static boolean checkPhoneNo(String phoneNo) {
-        String regexPhoneNo = "^[6-9]{1}[0-9]{9}$";
-        return Pattern.matches(regexPhoneNo, phoneNo);
-    }
-
-    public static boolean checkMailId(String mailId) {
-        String regexMail = "^[a-zA-Z]{1}[0-9a-zA-Z]{0,15}?[.\\-_]"
-                             .concat("?[a-zA-Z0-9]{1,20}")
-                             .concat("[@][a-z]{1,20}[a-z0-9]")
-                             .concat("{0,10}[.][a-z]{2,3}[.]?[a-z]{1,2}$");
-        return Pattern.matches(regexMail, mailId);
-    } */
+    // public static boolean isValidExperience(float experience) {
+        
 }

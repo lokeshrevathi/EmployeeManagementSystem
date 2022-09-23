@@ -7,6 +7,7 @@ public class AlreadyExistException extends Exception {
         this.exceptionMessage = exceptionMessage;
     }
 
+    @Override
     public String toString() {
         return exceptionMessage;
     }

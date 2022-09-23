@@ -80,7 +80,7 @@ public class TrainerService {
 
     public void updateTrainer(Integer id, String fieldName,
                               String fieldValue) {
-        Integer experience;
+        float experience;
         Trainer trainer = getTrainer(id);
         int trainerIndex = getTrainerIndex(id);
         switch (fieldName) {
@@ -105,7 +105,7 @@ public class TrainerService {
                 break;
 
             case "experience":
-                experience = Integer.parseInt(fieldValue);
+                experience = Float.parseFloat(fieldValue);
                 trainer.setExperience(experience);
                 break;
 
