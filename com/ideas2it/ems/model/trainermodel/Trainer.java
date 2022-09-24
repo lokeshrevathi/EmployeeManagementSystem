@@ -9,14 +9,14 @@ public class Trainer {
     private String name;
     private String dob;
     private String role;
-    private int experience;
+    private float experience;
     private long phoneNo;
     private String mailId;
     private List<Trainee> trainee;
 
     public Trainer(Integer id, String name, String dob,
                    String role, long phoneNo,
-                   String mailId, int experience) {
+                   String mailId, float experience) {
         this.id = id;
         this.name = name;
         this.dob = dob;
@@ -58,11 +58,11 @@ public class Trainer {
         return role;
     }
 
-    public void setExperience(int experience) {
+    public void setExperience(float experience) {
         this.experience = experience;
     }
 
-    public int getExperience() {
+    public float getExperience() {
         return experience;
     }
 
@@ -90,6 +90,7 @@ public class Trainer {
         return trainee;
     } 
 
+    @Override
     public String toString() {
         StringBuilder details = new StringBuilder();
         details.append("\nTrainer ID          : ").append(id)

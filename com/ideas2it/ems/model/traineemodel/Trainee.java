@@ -87,6 +87,7 @@ public class Trainee {
         return trainerId;
     }
 
+    @Override
     public String toString() {
         StringBuilder details = new StringBuilder();
         details.append("\nTrainee ID          : ").append(id)

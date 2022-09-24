@@ -8,14 +8,12 @@ import java.util.Scanner;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
+import com.ideas2it.ems.exception.AlreadyExistException;
+import com.ideas2it.ems.model.traineemodel.Trainee;
+import com.ideas2it.ems.model.trainermodel.Trainer;
 import com.ideas2it.ems.service.traineeservice.TraineeService;
 import com.ideas2it.ems.service.trainerservice.TrainerService;
 import com.ideas2it.ems.util.UtilValidation;
-import com.ideas2it.ems.exception.AlreadyExistException;
-import com.ideas2it.ems.dao.traineedao.TraineeDAO;
-import com.ideas2it.ems.dao.trainerdao.TrainerDAO;
-import com.ideas2it.ems.model.traineemodel.Trainee;
-import com.ideas2it.ems.model.trainermodel.Trainer;
 
 public class EmployeeController {
     int traineeId = 1;
@@ -571,7 +569,7 @@ public class EmployeeController {
 
                             case 6:
                                 trainerService.updateTrainer(id, "experience",
-                                                             Integer.toString(getExperience()));
+                                                             Float.toString(getExperience()));
                                 logger.info("Trainer experience "
                                                    .concat("is updated!\n"));
                                 break;
@@ -605,13 +603,13 @@ public class EmployeeController {
         }
     }
 
-    public int getExperience() {
+    public float getExperience() {
         int flag = 0;
-        int experience = 0;
+        float experience = 0;
         do {
             try {
                 logger.info("Enter Years of experience         : ");
-                experience = Integer.parseInt(scanner.nextLine());
+                experience = Float.parseFloat(scanner.nextLine());
                 flag = 0;
             } catch (NumberFormatException exception) {
                 flag = 1;
