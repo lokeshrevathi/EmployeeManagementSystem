@@ -19,7 +19,7 @@ public class TraineeService {
         return traineeDAO.getTraineeList();
     }
 
-    public boolean checkListIsEmpty() {
+    public boolean ifTraineeListEmpty() {
         return getAllDetails().isEmpty();
     }
 
