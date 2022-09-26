@@ -3,19 +3,20 @@ package com.ideas2it.ems.model.trainermodel;
 import java.util.List;
 
 import com.ideas2it.ems.model.traineemodel.Trainee;
+import com.ideas2it.ems.util.Role;
 
 public class Trainer {
     private Integer id;
     private String name;
     private String dob;
-    private String role;
+    private Role role;
     private float experience;
     private long phoneNo;
     private String mailId;
     private List<Trainee> trainee;
 
     public Trainer(Integer id, String name, String dob,
-                   String role, long phoneNo,
+                   Role role, long phoneNo,
                    String mailId, float experience) {
         this.id = id;
         this.name = name;
@@ -50,11 +51,11 @@ public class Trainer {
         return dob;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 
@@ -99,7 +100,7 @@ public class Trainer {
                .append("\nTrainer role        : ").append(role)
                .append("\nTrainer phone no    : ").append(phoneNo)
                .append("\nTrainer mail ID     : ").append(mailId)
-               .append("\nYears of experience : ").append(experience);
+               .append("\nYears of experience : ").append((float)experience);
         return details.toString();
     }
 }

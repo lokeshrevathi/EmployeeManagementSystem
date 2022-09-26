@@ -10,6 +10,7 @@ import com.ideas2it.ems.dao.trainerdao.TrainerDAO;
 import com.ideas2it.ems.model.traineemodel.Trainee;
 import com.ideas2it.ems.model.trainermodel.Trainer;
 import com.ideas2it.ems.exception.AlreadyExistException;
+import com.ideas2it.ems.util.Role;
 import com.ideas2it.ems.util.UtilValidation;
 
 public class TrainerService {
@@ -28,7 +29,12 @@ public class TrainerService {
         return trainerDAO.getTrainerList();
     }
 
-    public boolean checkListIsEmpty() {
+    public List<Trainee> getTraineeList(Integer id) {
+        int trainerIndex = getTrainerIndex(id);
+        return getAllDetails().get(trainerIndex).getTrainee();
+    }
+
+    public boolean ifTrainerListEmpty() {
         return trainerDAO.getTrainerList().isEmpty();
     }
 
@@ -93,7 +99,7 @@ public class TrainerService {
                 break;
 
             case "role":
-                trainer.setRole(fieldValue);
+                trainer.setRole(Role.valueOf(fieldValue));
                 break;
 
             case "phoneNo":
@@ -123,14 +129,21 @@ public class TrainerService {
         trainerDAO.updateTrainer(getTrainerIndex(trainerId), trainer);
     }
 
+    public void updateTraineeList(List<Trainee> traineeList,
+                                  Integer trainerId) {
+        Trainer trainer = getTrainer(trainerId);
+        trainer.setTrainee(traineeList);
+        trainerDAO.updateTrainer(getTrainerIndex(trainerId), trainer);
+    }
+
     public String getName(Integer id) {
         int trainerIndex = getTrainerIndex(id);
         return getAllDetails().get(trainerIndex).getName();
     }
 
-    public List<Trainee> getTraineeList(Integer id) {
+    public Role getRole(Integer id) {
         int trainerIndex = getTrainerIndex(id);
-        return getAllDetails().get(trainerIndex).getTrainee();
+        return getAllDetails().get(trainerIndex).getRole();
     }
 
     public void deleteTrainee(Integer trainerId, Integer traineeId) {

@@ -7,6 +7,7 @@ import com.ideas2it.ems.dao.trainerdao.TrainerDAO;
 import com.ideas2it.ems.exception.AlreadyExistException;
 import com.ideas2it.ems.model.traineemodel.Trainee;
 import com.ideas2it.ems.model.trainermodel.Trainer;
+import com.ideas2it.ems.util.Role;
 
 public class TraineeService {
     TraineeDAO traineeDAO = new TraineeDAO();
@@ -19,7 +20,7 @@ public class TraineeService {
         return traineeDAO.getTraineeList();
     }
 
-    public boolean checkListIsEmpty() {
+    public boolean ifTraineeListEmpty() {
         return getAllDetails().isEmpty();
     }
 
@@ -70,7 +71,7 @@ public class TraineeService {
                 break;
 
             case "role":
-                trainee.setRole(fieldValue);
+                trainee.setRole(Role.valueOf(fieldValue));
                 break;
 
             case "phoneNo":
@@ -106,6 +107,11 @@ public class TraineeService {
     public String getStatus(Integer id) {
         int traineeIndex = getTraineeIndex(id);
         return getAllDetails().get(traineeIndex).getStatus();
+    }
+
+    public Role getRole(Integer id) {
+        int traineeIndex = getTraineeIndex(id);
+        return getAllDetails().get(traineeIndex).getRole();
     }
 
     public void deleteDetails(Integer id) {
