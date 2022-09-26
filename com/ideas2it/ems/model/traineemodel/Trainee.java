@@ -1,17 +1,19 @@
 package com.ideas2it.ems.model.traineemodel;
 
+import com.ideas2it.ems.util.Role;
+
 public class Trainee {
     private Integer id;
     private String name;
     private String dob;
-    private String role;
+    private Role role;
     private long phoneNo;
     private String mailId;
     private String status;
     private Integer trainerId;
 
     public Trainee(Integer id, String name, String dob,
-                   String role, long phoneNo, String mailId, String status, Integer trainerId) {
+                   Role role, long phoneNo, String mailId, String status, Integer trainerId) {
         this.id = id;
         this.name = name;
         this.dob = dob;
@@ -46,11 +48,11 @@ public class Trainee {
         return dob;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 

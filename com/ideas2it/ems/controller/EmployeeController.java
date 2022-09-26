@@ -14,6 +14,7 @@ import com.ideas2it.ems.model.trainermodel.Trainer;
 import com.ideas2it.ems.service.traineeservice.TraineeService;
 import com.ideas2it.ems.service.trainerservice.TrainerService;
 import com.ideas2it.ems.util.UtilValidation;
+import com.ideas2it.ems.util.Role;
 
 public class EmployeeController {
     int traineeId = 1;
@@ -29,10 +30,10 @@ public class EmployeeController {
         EmployeeController controller = new EmployeeController();
 
         do {
-            logger.info("\n1->Enroll for trainer."
-                        .concat("\n2->Enroll for trainee.")
-                        .concat("\n3->Manipulate team.")
-                        .concat("\n4<-Exit.\n"));
+            logger.info("\n1->Enroll for trainer.");
+            logger.info("\n2->Enroll for trainee.");
+            logger.info("\n3->Manipulate team.");
+            logger.info("\n4<-Exit.\n");
             choice = controller.getChoice();
             switch (choice) {
                 case 1:
@@ -48,7 +49,7 @@ public class EmployeeController {
                     break;
 
                 case 4:
-                    logger.info("-----<EXIT>-----");
+                    logger.info("\n-----<EXIT>-----");
                     break;
 
                 default :
@@ -59,9 +60,10 @@ public class EmployeeController {
 
     public void manageTrainee() {
         int choice;
+
         do {
-            logger.info("\n1->Create\n2->Read\n3->Search\n4->Update" 
-                        .concat("\n5->Delete\n6<-Go Back").concat("\n"));
+            logger.info("\n1->Create\n2->Read\n3->Search");
+            logger.info("\n4->Update\n5->Delete\n6<-Go Back\n");
             choice = getChoice();
             switch (choice) {
                 case 1:
@@ -94,9 +96,12 @@ public class EmployeeController {
     }
 
     public void createTrainee() {
-        Trainee trainee = new Trainee(getId("trainee"), getName("trainee"),
-                                      getDob("trainee"), getRole("trainee"),
-                                      getPhoneNo("trainee"), getMailId("trainee"),
+        Trainee trainee = new Trainee(getId("trainee"),
+                                      getName("trainee"),
+                                      getDob("trainee"),
+                                      getRole("trainee"),
+                                      getPhoneNo("trainee"),
+                                      getMailId("trainee"),
                                       "not assigned", 0);
         traineeService.addDetails(trainee);
         logger.info("Trainee details added!\n");
@@ -106,13 +111,13 @@ public class EmployeeController {
         
         if (fieldName.equals("trainee")) {
             Integer id1 = new Integer(traineeId++);
-            logger.info("\nYours " + fieldName + " ID                  : "
-                               + id1 + "\n");
+            logger.info("\nYours " + fieldName + " ID                  : ");
+            logger.info(id1 + "\n");
             return id1;
         } else {
             Integer id2 = new Integer(trainerId++);
-            logger.info("\nYours " + fieldName + " ID                  : "
-                               + id2 + "\n");
+            logger.info("\nYours " + fieldName + " ID                  : ");
+            logger.info(id2 + "\n");
             return id2;
         }
     }
@@ -147,19 +152,41 @@ public class EmployeeController {
         return dob;
     }
 
-    public String getRole(String fieldName) {
-        String role;
-        boolean isValidRole = false;
+    public Role getRole(String fieldName) {
+        int choice = 0;
+        Role[] roles = Role.values();
+        Role role = roles[0];
+        boolean isLoop = false;
 
         do {
-            logger.info("Enter "  + fieldName + " role                : ");
-            role = scanner.nextLine();
-            isValidRole = !(UtilValidation.isValid(UtilValidation.regexRole, role));
-            if (isValidRole) {
-                logger.warn("Please enter valid role....!\n");
+            displayRoleMessage(fieldName);
+            choice = getChoice();
+            if ("trainee".equals(fieldName)) {
+                role = roles[choice - 1];
+                return role;
+            } else if ("trainer".equals(fieldName)) {
+                role = roles[choice + 1];
+                return role;
+            } else {
+                logger.warn("Please enter valid option....!\n");
+                isLoop = true;
             }
-        } while (isValidRole);
+        } while (isLoop);
         return role;
+    }
+
+    public void displayRoleMessage(String fieldName) {
+        if ("trainer".equals(fieldName)) {
+            logger.info("\n" + fieldName + " roles");
+            logger.info("\n1-->Junior software developer.");
+            logger.info("\n2-->Junior software tester.");
+            logger.info("\n3-->Senior software developer.");
+            logger.info("\n4-->Senior software tester.\n");
+        } else {
+            logger.info("\n" + fieldName + " roles");
+            logger.info("\n1-->Software developer trainee.");
+            logger.info("\n2-->software tester trainee.\n");
+        }
     }
 
     public long getPhoneNo(String fieldName) {
@@ -210,75 +237,92 @@ public class EmployeeController {
     }
 
     public void readTrainee() {
+        Integer trainerID;
+
         if (traineeService.ifTraineeListEmpty()) {
             logger.warn("Trainee details doesn't exist....!\n");
         } else {
+            logger.info("*************************");
+            logger.info("*************************\n");
             for (Trainee trainee : traineeService.getAllDetails()) {
-                logger.info("\n" + trainee.toString() + "\n"); 
-                Integer trainerID = trainee.getTrainerId();
+                logger.info(trainee.toString() + "\n"); 
+                trainerID = trainee.getTrainerId();
                 if (!(trainerID.equals(0))) {
-                    logger.info("Trainee assigned under : "
-                                       + trainerID + "\n");
+                    logger.info("Trainee assigned under : ");
+                    logger.info(trainerID + "\n");
                 }
+            logger.info("*************************");
+            logger.info("*************************\n");
             }
         }
     }
 
-    public void searchTrainee() {
-        logger.info("\nEnter Trainee ID to search Trainee details: ");
-        Integer id = getIdToManipulate();
+    public Integer searchTrainee() {
+        Integer trainerId1;
+        Integer id = getIdToManipulate("trainee");
 
         try {
             if (traineeService.ifTraineePresent(id)) {
+                logger.info("*************************");
+                logger.info("*************************\n");
                 logger.info(traineeService.displayTrainee(id) + "\n");
-                Integer trainerId1 = traineeService.getTrainerId(id);
+                trainerId1 = traineeService.getTrainerId(id);
                 if (!(trainerId1.equals(0))) {
-                    logger.info("Trainee assigned under : "
-                                       + traineeService.getTrainerId(id) + "\n");
+                    logger.info("Trainee assigned under : ");
+                    logger.info(traineeService.getTrainerId(id) + "\n");
                 }
+                logger.info("*************************");
+                logger.info("*************************\n");
             }
         } catch (AlreadyExistException existException) {
             logger.error(existException + "\n");
         }
+        return id;
     }
 
     public void updateTrainee() {
         int choice;
-        logger.info("\nEnter trainee Id to update : ");
-        Integer id = getIdToManipulate();
+        Integer trainerID;
+        Integer id = searchTrainee();
 
         try {
             if (traineeService.ifTraineePresent(id)) {
                 do {
-                    logger.info("\n1-->Trainee Name.\n2-->Trainee D.O.B."
-                                .concat("\n3-->Trainee Role.")
-                                .concat("\n4-->Trainee Phone number.")
-                                .concat("\n5-->Trainee Mail Id.")
-                                .concat("\n6-->Go back.").concat("\n").concat("\n"));
+                    logger.info("\n1-->Trainee Name.");
+                    logger.info("\n2-->Trainee D.O.B.");
+                    logger.info("\n3-->Trainee Role.");
+                    logger.info("\n4-->Trainee Phone number.");
+                    logger.info("\n5-->Trainee Mail Id.");
+                    logger.info("\n6-->Go back.\n");
                     choice = getChoice();
                         switch (choice) {
                             case 1:
-                                traineeService.updateTrainee(id, "name", getName("trainee"));
+                                traineeService.updateTrainee(id, "name",
+                                        getName("trainee"));
                                 logger.info("Trainee name is updated!\n");
                                 break;
 
                             case 2:
-                                traineeService.updateTrainee(id, "dob", getDob("trainee"));
+                                traineeService.updateTrainee(id, "dob",
+                                        getDob("trainee"));
                                 logger.info("Trainee D.O.B is updated!\n");
                                 break;
 
                             case 3:
-                                traineeService.updateTrainee(id, "role", getRole("trainee"));
+                                traineeService.updateTrainee(id, "role",
+                                        getRole("trainee").name());
                                 logger.info("Trainee Role is updated!\n");
                                 break;
 
                             case 4:
-                                traineeService.updateTrainee(id, "phoneNo", Long.toString(getPhoneNo("trainee")));
+                                traineeService.updateTrainee(id, "phoneNo",
+                                        Long.toString(getPhoneNo("trainee")));
                                 logger.info("Trainee Address is updated!\n");
                                 break;
 
                             case 5:
-                                traineeService.updateTrainee(id, "mailId", getMailId("trainee"));
+                                traineeService.updateTrainee(id, "mailId",
+                                        getMailId("trainee"));
                                 logger.info("Trainee MailID is updated!\n");
                                 break;
 
@@ -288,15 +332,14 @@ public class EmployeeController {
                             default:
                                 logger.warn("Invalid choice\n");
                         }
-                        Integer trainerID = traineeService.getTrainerId(id);
+                        trainerID = traineeService.getTrainerId(id);
                         if (!(trainerID.equals(0))) {
                             trainerService.updateTrainee(trainerID, id,
-                                                         traineeService.getTrainee(id));
+                                    traineeService.getTrainee(id));
                         }
                 } while (choice != 6);
             }
         } catch (AlreadyExistException existException) {
-            logger.error(existException + "\n");
         }
     }
 
@@ -304,8 +347,7 @@ public class EmployeeController {
         Integer id;
         Integer trainerID;
         List<Trainee> traineeList;
-        logger.info("\nEnter trainee ID to delete employee details: ");
-        id = getIdToManipulate();
+        id = getIdToManipulate("trainee");
 
         try {
             if (traineeService.ifTraineePresent(id)) {
@@ -326,9 +368,9 @@ public class EmployeeController {
         Integer id;
         List<Trainee> traineeList = new ArrayList<Trainee>();
         do {
-            logger.info("\n1--->Assign already enrolled trainee."
-                        .concat("\n2--->Enroll trainee and assign.")
-                        .concat("\n3<---Go back.").concat("\n"));
+            logger.info("\n1--->Assign already enrolled trainee.");
+            logger.info("\n2--->Enroll trainee and assign.");
+            logger.info("\n3<---Go back.\n");
             choice = getChoice();
             switch (choice) {
                 case 1:
@@ -359,31 +401,32 @@ public class EmployeeController {
         List<Trainee> traineeList = new ArrayList<Trainee>();
         Integer id;
         if (traineeService.ifTraineeListEmpty()) {
-            logger.info("trainee details does not"
-                        .concat(" exist...!\nPlease enroll")
-                        .concat(" trainee details...!\n"));
+            logger.info("\ntrainee details does not exist...!");
+            logger.info("\nPlease enroll trainee...!\n");
         } else {
             System.out.println();
             List<Trainee> listOfTrainee = traineeService.getAllDetails();
             for (Trainee trainee : listOfTrainee) {
-                logger.info(trainee.getId() + "-->"
-                            + trainee.getName() + "--"
-                            + trainee.getStatus() + "\n");
+                logger.info(trainee.getId() + "-->");
+                logger.info(trainee.getName() + "-->");
+                logger.info(trainee.getStatus() + "-->"); 
+                logger.info(trainee.getRole() + "\n");
             }
-            logger.info("\nSelect trainee ID to"
-                             .concat(" add trainee: "));
-            id = getIdToManipulate();
+            id = getIdToManipulate("trainee");
             try {
                 if (traineeService.ifTraineePresent(id)) {
                     if ((traineeService.getStatus(id))
                         .equals("not assigned")) {
-                        traineeService.updateTrainee(id, "status", "assigned");
-                        traineeService.updateTrainee(id, "trainerId", Integer
-                                                     .toString(trainerId1));
-                        traineeList.add(traineeService.getTrainee(id));
+                        if (ifRoleMisMatch(trainerId1, id)) {
+                            traineeService.updateTrainee(id, "status", "assigned");
+                            traineeService.updateTrainee(id, "trainerId", Integer
+                                                         .toString(trainerId1));
+                            traineeList.add(traineeService.getTrainee(id));
+                        } else {
+                            logger.info("\nTrainer, trainee role mismatch....!");
+                        }
                     } else {
-                        logger.info("This trainee is already"
-                                           .concat(" assigned\n"));
+                        logger.info("This trainee is already assigned....!\n");
                     }
                 }
             } catch (AlreadyExistException existException) {
@@ -397,19 +440,35 @@ public class EmployeeController {
         List<Trainee> traineeList = new ArrayList<Trainee>();
         createTrainee();
         Integer setId = new Integer(traineeId - 1);
-        traineeService.updateTrainee(setId, "status", "assigned");
-        traineeService.updateTrainee(setId, "trainerId", Integer.toString(trainerId1));
-        traineeList.add(traineeService.getTrainee(setId));
+        if (ifRoleMisMatch(trainerId1, setId)) {
+            traineeService.updateTrainee(setId, "status", "assigned");
+            traineeService.updateTrainee(setId, "trainerId", Integer.toString(trainerId1));
+            traineeList.add(traineeService.getTrainee(setId));
+        } else {
+            logger.info("\nTrainee details enrolled....!");
+            logger.info("\nTrainer, trainee role mismatch....!");
+            logger.info("\nTrainee doesn't assigned....!\n");
+        }
         return traineeList;
+    }
+
+    public boolean ifRoleMisMatch(Integer trainerID, Integer traineeID) {
+        Role[] roles = Role.values();
+        return (((trainerService.getRole(trainerID).equals(roles[2])
+                || trainerService.getRole(trainerID).equals(roles[4]))
+                && traineeService.getRole(traineeID).equals(roles[0]))
+                || ((trainerService.getRole(trainerID).equals(roles[3])
+                || trainerService.getRole(trainerID).equals(roles[5]))
+                && traineeService.getRole(traineeID).equals(roles[1])));
     }
 
     public void manipulateTeam() {
         int choice = 0;
         int trainerID = 0; 
         do {
-            logger.info("\n1-->Show team details."
-                        .concat("\n2-->Assign trainee for already enrolled trainer.")
-                       .concat("\n3<--go back\n"));
+            logger.info("\n1-->Show team details.");
+            logger.info("\n2-->Assign trainee for already enrolled trainer.");
+            logger.info("\n3<--go back\n");
             choice = getChoice();
         
             switch (choice) {
@@ -419,14 +478,13 @@ public class EmployeeController {
 
                 case 2:
                     if (displayTeamDetails()) {
-                        logger.info("Select Trainer ID to assign trainee: ");
-                        trainerID = getChoice();
+                        trainerID = getIdToManipulate("trainer");
                         try {
                             if (trainerService.ifTrainerPresent(trainerID)) {
                                 List<Trainee> traineeList
                                     = trainerService.getTrainer(trainerID)
                                       .getTrainee();
-                                traineeList.addAll(assignEnrolledTrainee(trainerID));
+                                traineeList.addAll(assignTrainee(trainerID));
                                 trainerService.updateTraineeList(traineeList,
                                                                  trainerID);
                             }
@@ -445,23 +503,27 @@ public class EmployeeController {
         } while (3 != choice);
     }
 
+    // public void 
+
     public boolean displayTeamDetails() {
         boolean ifTeamExist = true;
 
         if (!(trainerService.ifTrainerListEmpty())) {
             for (Trainer trainer : trainerService.getAllDetails()) {
-                logger.info("\n****************************\n"
-                            + "Trainer\n");
-                logger.info(trainer.getId() + "-->" + trainer.getName());
+                logger.info("\n****************************\n");
+                logger.info("Trainer\n");
+                logger.info(trainer.getId() + "-->");
+                logger.info(trainer.getName() + "-->");
+                logger.info(trainer.getRole());
                 if (trainer.getTrainee().isEmpty()) {
-                    logger.info("\nNo trainee's can assigned for -->" 
-                                       + trainer.getName() + "\n");
+                    logger.info("\nNo trainee's can assigned for -->");
+                    logger.info(trainer.getName() + "\n");
                 } else {
-                    logger.info("\ntrainee's assigned for -->" 
-                                       + trainer.getName() + "\n");
+                    logger.info("\ntrainee's assigned for -->");
+                    logger.info(trainer.getName() + "\n");
                     for (Trainee trainee : trainer.getTrainee()) {
-                        logger.info(trainee.getId() + "-->"
-                                           + trainee.getName() + "\n");
+                        logger.info(trainee.getId() + "-->");
+                        logger.info(trainee.getName() + "\n");
                     }
                 }
                 logger.info("****************************\n");
@@ -476,8 +538,9 @@ public class EmployeeController {
     public void manageTrainer() {
         int choice;
         do {
-            logger.info("\n1-->Create\n2-->Read\n3-->Search\n4-->Update" 
-                        .concat("\n5-->Delete\n6<--Go Back"));
+            logger.info("\n1-->Create\n2-->Read");
+            logger.info("\n3-->Search\n4-->Update");
+            logger.info("\n5-->Delete\n6<--Go Back\n");
             choice = getChoice();
             switch (choice) {
                 case 1:
@@ -511,12 +574,13 @@ public class EmployeeController {
 
     public void createTrainer() {
         Integer id = getId("trainer");
+        Role role = Role.SOFTWARE_DEVELOPER_TRAINEE;
         Trainer trainer = new Trainer(id, getName("trainer"),
                                       getDob("trainer"),
-                                      getRole("trainer"),
+                                      role = getRole("trainer"),
                                       getPhoneNo("trainer"),
                                       getMailId("trainer"),
-                                      getExperience());
+                                      getExperience(role));
         trainerService.addDetails(trainer);
         trainer.setTrainee(assignTrainee(id));
         trainerService.assignTrainee(id, trainer);
@@ -532,56 +596,60 @@ public class EmployeeController {
                 if ((!(trainer.getTrainee().isEmpty())
                     && (fieldName.equals("Team")))
                     || fieldName.equals("Trainer")) {
-                    logger.info("*****************************"
-                                .concat("*********************\n"));
+                    logger.info("*************************");
+                    logger.info("*************************\n");
                     logger.info(trainer.toString() + "\n");
                     if (!(trainer.getTrainee().isEmpty())) {
-                        logger.info("\nTrainee's assigned for -> "
-                                    + trainer.getName() + "\n");
+                        logger.info("\nTrainee's assigned for -> ");
+                        logger.info(trainer.getName() + "\n");
                         for (Trainee trainee : trainer.getTrainee()) {
                             logger.info(trainee.toString() + "\n");
                         }
                     }
-                    logger.info("*****************************"
-                                .concat("*********************\n"));
+                    logger.info("*************************");
+                    logger.info("*************************\n");
                 }
             }
         }
     }
 
-    public void searchTrainer() {
-        logger.info("\nEnter Trainer ID to search Trainer details: ");
-        Integer id = getIdToManipulate();
+    public Integer searchTrainer() {
+        Integer id = getIdToManipulate("trainer");
 
         try {
             if (trainerService.ifTrainerPresent(id)) {
+                logger.info("*************************");
+                logger.info("*************************\n");
                 logger.info(trainerService.displayTrainer(id) + "\n");
                 if (!(trainerService.checkTraineeListIsEmpty(id))) {
-                    logger.info("\nTrainee's assigned for -> "
-                                       + trainerService.getName(id) + "\n");
+                    logger.info("\nTrainee's assigned for -> ");
+                    logger.info(trainerService.getName(id) + "\n");
                     for (Trainee trainee : trainerService.getTraineeList(id)) {
                         logger.info(trainee.toString() + "\n");
                     }
                 }
+                logger.info("*************************");
+                logger.info("*************************\n");
             }
         } catch (AlreadyExistException existException) {
             logger.error(existException + "\n");
         }
+        return id;
     }
 
     public void updateTrainer() {
         int choice;
-        logger.info("\nEnter trainer Id to update : ");
-        Integer id = getIdToManipulate();
+        Integer id = searchTrainer();
         try {
             if (trainerService.ifTrainerPresent(id)) {
                 do {
-                    logger.info("\n1-->Trainer Name.\n2-->Trainer D.O.B."
-                                + "\n3-->Trainer Role."
-                                + "\n4-->Trainer Phone number."
-                                + "\n5-->Trainer Mail Id."
-                                + "\n6.Trainer Experience."
-                                + "\n7<--Go back.\n");
+                    logger.info("\n1-->Trainer Name.");
+                    logger.info("\n2-->Trainer D.O.B.");
+                    logger.info("\n3-->Trainer Role.");
+                    logger.info("\n4-->Trainer Phone number.");
+                    logger.info("\n5-->Trainer Mail Id.");
+                    logger.info("\n6-->Trainer Experience.");
+                    logger.info("\n7<--Go back.\n");
                     choice = getChoice();
                         switch (choice) {
                             case 1:
@@ -598,7 +666,7 @@ public class EmployeeController {
 
                             case 3:
                                 trainerService.updateTrainer(id, "role",
-                                                             getRole("trainer"));
+                                        getRole("trainer").name());
                                 logger.info("Trainer Role is updated!\n");
                                 break;
 
@@ -611,15 +679,18 @@ public class EmployeeController {
 
                             case 5:
                                 trainerService.updateTrainer(id, "mailId",
-                                                             getMailId("trainer"));
+                                        getMailId("trainer"));
                                 logger.info("Trainer MailID is updated!\n");
                                 break;
 
                             case 6:
                                 trainerService.updateTrainer(id, "experience",
-                                        Float.toString(getExperience()));
+                                        Float.toString(getExperience(trainerService.getTrainer(id).getRole())));
                                 logger.info("Trainer experience "
                                                    .concat("is updated!\n"));
+                                break;
+
+                            case 7:
                                 break;
 
                             default:
@@ -628,13 +699,11 @@ public class EmployeeController {
                 } while (7 != choice);
             }
         } catch (AlreadyExistException existException) {
-            logger.error(existException + "\n");
         }
     }
 
     public void deleteTrainer() {
-        logger.info("\nEnter trainer ID to delete employee details: ");
-        Integer id = getIdToManipulate();
+        Integer id = getIdToManipulate("trainer");
         try {
             if (trainerService.ifTrainerPresent(id)) {
                 for (Trainee trainee : trainerService.getTraineeList(id)) {
@@ -653,20 +722,25 @@ public class EmployeeController {
         }
     }
 
-    public float getExperience() {
+    public float getExperience(Role role) {
         int flag = 0;
         float experience = 0;
         do {
             try {
                 logger.info("Enter Years of experience         : ");
                 experience = Float.parseFloat(scanner.nextLine());
-                flag = 0;
+                if (role.isValidExperience((float)experience)) {
+                    flag = 0;
+                } else {
+                    flag = 1;
+                    logger.error("invalid experience....!\n");
+                }
             } catch (NumberFormatException exception) {
                 flag = 1;
                 logger.error("invalid value....!\n");
             }
         } while (1 == flag);
-        return experience;
+        return Float.valueOf(String.format("%.1f", experience));
     }
 
     public int getChoice() {
@@ -674,7 +748,7 @@ public class EmployeeController {
         int choice = 0;
         do {
             try {
-                logger.info("\nEnter your choice         : ");
+                logger.info("\nEnter your choice                 : ");
                 choice = Integer.parseInt(scanner.nextLine());
                 flag = 0;
             } catch (NumberFormatException exception) {
@@ -685,11 +759,12 @@ public class EmployeeController {
         return choice;
     }
 
-    public int getIdToManipulate() {
+    public int getIdToManipulate(String fieldName) {
         int flag = 0;
         int choice = 0;
         do {
             try {
+                logger.info("\nEnter " + fieldName + " ID : ");
                 choice = Integer.parseInt(scanner.nextLine());
                 flag = 0;
             } catch (NumberFormatException exception) {
